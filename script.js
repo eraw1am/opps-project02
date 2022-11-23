@@ -12,8 +12,24 @@ function upload()
 }
 
 function upload_ph()
-{
+{   
+    let img = document.getElementById("human_image");
+    let imgData = getBase64Image(img);
+    localStorage.setItem('image', imgData);
     location.href="result.html";
+}
+
+function getBase64Image(img){
+    let canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    let ctx = canvas.getContext("2d");
+    ctx.drawImage(img,0,0);
+
+    let datURL = canvas.toDataURL("image/png");
+
+    return datURL.replace(/^data:image\/(png|jpg);base64,/, "");
 }
 
 function Click_W()

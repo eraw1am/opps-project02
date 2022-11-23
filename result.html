@@ -86,6 +86,10 @@
         return;
         let model, labelContainer, maxPredictions;
 
+        let dataImage = localStorage.getItem('imgData');
+        let image = document.getElementById("face-image");
+        image.src = "data:image/png;base64,"+dataImage;
+        
         // Load the image model and setup the webcam
         async function init() {
             const modelURL = URL + "model.json";
@@ -98,7 +102,6 @@
             model = await tmImage.load(modelURL, metadataURL);
             maxPredictions = model.getTotalClasses();
 
-            let image = document.getElementById("face-image");
             // predict can take in an image, video or canvas html element
             let prediction = await model.predict(image, false);
             
