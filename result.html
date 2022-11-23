@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Lookalike style recommendations</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<nav class="bar_bg">
+    <div align="center">
+        <a href="home.html"><img src="./photo/home.png" width="60" /></a>
+        <!--navi bar-->
+    </div>
+</nav>
+
+<body class="bg" onload="upload(); init()">
+    <div align="center">
+        <p><br><br><br></p>
+        <p class="title_1">나와 어울리는 스타일 찾기</p>
+        <p class="title_2" id="gen">나는 어떤 동물과 닮았을까?</p>
+        <br><br>
+        <table class="table_res" align="center">
+            <tr>
+                <td class="upload_photo" rowspan="5"><img src="./photo/upload_photo.png" id="face-image" width=250 /></td>
+                <!--using js-->
+                <td rowspan="5">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td class="animal_photo" rowspan="4"><img src="./photo/cat.png" width=180 id="main-photo"/></td>
+                <!--using js-->
+                <td rowspan="5">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+            </tr>
+            
+            <tr>
+                <td><img src="./photo/cat.png" width=60 id="first-photo"/></td>
+                <td>&nbsp<span id="first-animal">고양이</span>&nbsp</td>
+                <td>&nbsp<span id="first-num"></span>%</td>
+                <!--using js-->
+            </tr>
+            <tr>
+                <td><img src="./photo/dog.png" width=60 id="second-photo"/></td>
+                <td>&nbsp<span id="second-animal">강아지</span>&nbsp</td>
+                <td>&nbsp<span id="second-num"></span>%</td>
+                <!--using js-->
+            </tr>
+            <tr>
+                <td><img src="./photo/fox.png" width=60 id="third-photo"/></td>
+                <td>&nbsp<span id="third-animal">여&nbsp&nbsp우</span>&nbsp</td>
+                <td>&nbsp<span id="third-num"></span>%</td>
+                <!--using js-->
+            </tr>
+            <tr>
+                <td class="title_2" align="center"><span id="main-animal">고양이</span></td>
+                <!--using js-->
+                <td><img src="./photo/other.png" width=60 /></td>
+                <td>&nbsp기&nbsp&nbsp타&nbsp</td>
+                <td>&nbsp<span id="other-num"></span>%</td>
+                <!--using js-->
+            </tr>
+            
+        </table>
+    </div>
+    <div align="right">
+        <table class="table_res">
+            <tr>
+                <td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                <td rowspan="2"><img src="./photo/go.png" width="90" style="cursor:pointer;" onclick="eval()" /></td>
+                <td rowspan="2">&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+            </tr>
+            <tr>
+                <td>내 얼굴상에 어울리는 스타일은?</td>
+            </tr>
+        </table>
+    </div>
+    <!--script-->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+    <script src="script.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        
+        let gender = localStorage.getItem('gender');
+        // the link to your model provided by Teachable Machine export panel
+        if(gender === 'W'){
+            const URL = "./model/woman/";
+        }else{
+            const URL = "./model/man/";
+        }
+        
+        return;
+        let model, labelContainer, maxPredictions;
+
+        // Load the image model and setup the webcam
+        async function init() {
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+
+            // load the model and metadata
+            // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
+            // or files from your local hard drive
+            // Note: the pose library adds "tmImage" object to your window (window.tmImage)
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+
+            let image = document.getElementById("face-image");
+            // predict can take in an image, video or canvas html element
+            let prediction = await model.predict(image, false);
+            
+            for(let i = maxPredictions-1; i>0; i--){
+                for(let j = 0; j<i; j++){
+                    if(prediction[j].probability < prediction[j+1].probability){
+                        let tmp = prediction[j];
+                        prediction[j] = prediction[j+1];
+                        prediction[j+1] = tmp;
+                    }
+                }
+            }
+
+            document.getElementById("main-photo").src = matchphoto(0, prediction);
+            document.getElementById("first-photo").src = matchphoto(0, prediction);
+            document.getElementById("second-photo").src = matchphoto(1, prediction);
+            document.getElementById("third-photo").src = matchphoto(2, prediction);
+
+            document.getElementById("first-animal").innerHTML = matchname(0, prediction);
+            document.getElementById("second-animal").innerHTML = matchname(1, prediction);
+            document.getElementById("third-animal").innerHTML = matchname(2, prediction);
+            document.getElementById("main-animal").innerHTML = matchname(0, prediction);
+
+            let first_predict = prediction[0].probability.toFixed(0);
+            let second_predict = prediction[1].probability.toFixed(0);
+            let third_predict = prediction[2].probability.toFixed(0);
+            document.getElementById("first-num").innerHTML = first_predict;
+            document.getElementById("second-num").innerHTML = second_predict;
+            document.getElementById("third-num").innerHTML = third_predict;
+            document.getElementById("other-num").innerHTML = 100 - first_predict - second_predict - third_predict;
+
+        }
+
+        function matchphoto(num, _list){
+            switch(_list[num].className){
+                case 'cat':
+                    return "./photo/cat.png";
+                    break;
+                case 'bear':
+                    return "./photo/bear.png";
+                    break;
+                case 'dog':
+                    return "./photo/dog.png";
+                    break;
+                case 'tiger':
+                    return "./photo/tiger.png";
+                    break;
+                case 'wolf':
+                    return "./photo/wolf.png";
+                    break;
+                case 'fox':
+                    return "./photo/fox.png";
+                    break;
+                case 'rabbit':
+                    return "./photo/rabbit.png";
+                    break;
+                case 'squirrel':
+                    return "./photo/squirrel.png";
+                    break;
+                case 'frog':
+                    return "./photo/frog.png";
+                    break;
+                case 'snake':
+                    return "./photo/snake.png";
+                    break;
+                default:
+                    return "./photo/other.png";
+            }
+        }
+
+        function matchname(num, _list){
+            switch(_list[num].className){
+                case 'cat':
+                    return "고양이";
+                    break;
+                case 'bear':
+                    return " 곰 ";
+                    break;
+                case 'dog':
+                    return "강아지";
+                    break;
+                case 'tiger':
+                    return "호랑이";
+                    break;
+                case 'wolf':
+                    return "늑 대";
+                    break;
+                case 'fox':
+                    return "여 우";
+                    break;
+                case 'rabbit':
+                    return "토 끼";
+                    break;
+                case 'squirrel':
+                    return "다람쥐";
+                    break;
+                case 'frog':
+                    return "개구리";
+                    break;
+                case 'snake':
+                    return " 뱀 ";
+                    break;
+                default:
+                    return "오 류";
+            }
+        }
+
+
+    </script>
+</body>

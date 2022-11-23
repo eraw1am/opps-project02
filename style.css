@@ -1,51 +1,71 @@
-.title{
-    color: orange;
-    font-weight: 700;
-    font-style: italic;
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap');
+
+*{
+    margin:0;
+    padding:0;
 }
 
-.button1{
-    -webkit-appearance: none;
-    -moz-appearance: none;
-     appearance: none;
-
-     margin: 0;
-     padding: 0.5rem 1rem;
-
-    font-size: 1rem;
+.title_1{
+    font-family: 'Do Hyeon', sans-serif;
     font-weight: 400;
-    text-align: center;
-    text-decoration: none;
-
-    display: inline-block;
-    width: auto;
-
-    border: none;
-    border-radius: 4px;
-
-    color: red;
-    background-color: antiquewhite;
+    font-size: 60px;
 }
 
-.button2{
-    -webkit-appearance: none;
-    -moz-appearance: none;
-     appearance: none;
-
-     margin: 0;
-     padding: 0.5rem 1rem;
-
-    font-size: 1rem;
-    font-weight: 400;
-    text-align: center;
-    text-decoration: none;
-
-    display: inline-block;
-    width: auto;
-
-    border: none;
-    border-radius: 4px;
-
-    color:brown;
-    background-color: aliceblue;
+.title_2{
+    font-family: 'Do Hyeon', sans-serif;
+    font-weight: 100;
+    font-size: 30px;
 }
+
+.bar_bg{
+    background-color: #ffe4bf;
+}
+
+.bg{
+    background-color: #fffae6;
+}
+
+.button_1{
+    width: 0px;
+    margin: 0px auto;
+    top:-50px;
+    left: -120px;
+    position: relative
+}
+
+.go{
+    position: absolute;
+    display:none;
+}
+
+.button_1:hover .go{
+    display:block;
+}
+.button_1:hover .start{
+    display:none;
+}
+
+.button_2{
+    width: 0px;
+    margin: 0px auto;
+    top:0px;
+    left: -230px;
+    position: relative
+}
+
+.up_hover{
+    position: relative;
+    display:none;
+}
+
+.button_2:hover .up_hover{
+    display:block;
+}
+.button_2:hover .up{
+    display:none;
+}
+
+.table_res{
+    font-family: 'Do Hyeon', sans-serif;
+}
+
